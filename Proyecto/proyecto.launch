@@ -1,0 +1,39 @@
+<launch>
+	<node pkg="turtlesim" type="turtlesim_node" name="el_turtlesim" />
+	
+	<arg name="node_start_delay" default="2.0" /> 
+	
+	<node pkg="rosservice" type="rosservice" name="kill_turtle_1" 
+		  args="call /kill 'turtle1'" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>
+	
+	<node pkg="rosservice" type="rosservice" name="load_turtle6" 
+		  args="call /spawn 10 1 1.7894 'turtle6'" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+	
+	<node pkg="rosservice" type="rosservice" name="load_turtle5" 
+		  args="call /spawn 8 1 1.3521 'turtle5'" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />	
+	
+	<node pkg="rosservice" type="rosservice" name="load_turtle4" 
+		  args="call /spawn 6.5 1 1.7894 'turtle4'" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />	
+		  
+	<node pkg="rosservice" type="rosservice" name="load_turtle3" 
+		  args="call /spawn 4.5 1 1.3521 'turtle3'" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />	
+		  
+	<node pkg="rosservice" type="rosservice" name="load_turtle2" 
+		  args="call /spawn 3 1 1.7359 'turtle2'" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />	
+		  
+	<node pkg="rosservice" type="rosservice" name="load_turtle1" 
+		  args="call /spawn 1.5 1 1.4056 'turtle1'" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />	
+		  
+	<node pkg="proyecto" type="gotogoal.py" name="tort6" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />	  
+	
+	<node pkg="proyecto" type="tort5.py" name="tort5" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+	
+	<node pkg="proyecto" type="tort4.py" name="tort4" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+	
+	<node pkg="proyecto" type="tort3.py" name="tort3" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+	
+	<node pkg="proyecto" type="tort2.py" name="tort2" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+	
+	<node pkg="proyecto" type="tort1.py" name="tort1" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+	
+</launch>

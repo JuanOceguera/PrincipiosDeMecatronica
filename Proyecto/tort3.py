@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding: utf-8
+#!/usr/bin/env python
 
 import rospy
 from geometry_msgs.msg import Twist
@@ -14,15 +14,15 @@ theta1 = 0;
 x2 = 0;
 y2 = 0;
 theta2 = 0;
-x3 = 0;
-y3 = 0;
-theta3 = 0;
 x4 = 0;
 y4 = 0;
 theta4 = 0;
 x5 = 0;
 y5 = 0;
 theta5 = 0;
+x6 = 0;
+y6 = 0;
+theta6 = 0;
 
 def poseCallback1(pose_message):
     global x1
@@ -42,15 +42,6 @@ def poseCallback2(pose_message):
     y2 = pose_message.y
     theta2 = pose_message.theta
 
-def poseCallback3(pose_message):
-    global x3
-    global y3
-    global theta3
-    
-    x3 = pose_message.x
-    y3 = pose_message.y
-    theta3 = pose_message.theta
-
 def poseCallback4(pose_message):
     global x4
     global y4
@@ -69,6 +60,15 @@ def poseCallback5(pose_message):
     y5 = pose_message.y
     theta5 = pose_message.theta
 
+def poseCallback6(pose_message):
+    global x6
+    global y6
+    global theta6
+    
+    x6 = pose_message.x
+    y6 = pose_message.y
+    theta6 = pose_message.theta
+
 
 class TurtleBot:
 
@@ -77,13 +77,13 @@ class TurtleBot:
         # unique node (using anonymous=True).
         rospy.init_node('turtlebot_controller', anonymous=True)
 
-        # Publisher which will publish to the topic '/turtle6/cmd_vel'.
-        self.velocity_publisher = rospy.Publisher('/turtle6/cmd_vel',
+        # Publisher which will publish to the topic '/turtle3/cmd_vel'.
+        self.velocity_publisher = rospy.Publisher('/turtle3/cmd_vel',
                                                   Twist, queue_size=10)
 
-        # A subscriber to the topic '/turtle6/pose'. self.update_pose is called
+        # A subscriber to the topic '/turtle3/pose'. self.update_pose is called
         # when a message of type Pose is received.
-        self.pose_subscriber = rospy.Subscriber('/turtle6/pose',
+        self.pose_subscriber = rospy.Subscriber('/turtle3/pose',
                                                 Pose, self.update_pose)
 
         self.pose = Pose()
@@ -117,7 +117,7 @@ class TurtleBot:
         return sqrt((x_2 - x_1)**2 + (y_2 - y_1)**2)
     
     def distanciaMinima(self,x,y): #Esta función no sirve para detectar tortugas en el semicirculo superior; sirve para hacer el test de la distancia mínima al final de cada trayectoria
-        return min([self.calculaDistancia(x,y,x1,y1), self.calculaDistancia(x,y,x2,y2), self.calculaDistancia(x,y,x3,y3), self.calculaDistancia(x,y,x4,y4), self.calculaDistancia(x,y,x5,y5)])
+        return min([self.calculaDistancia(x,y,x1,y1), self.calculaDistancia(x,y,x2,y2), self.calculaDistancia(x,y,x4,y4), self.calculaDistancia(x,y,x5,y5), self.calculaDistancia(x,y,x6,y6)])
     
     def proyeccion(self,x,y):
         return np.dot([x-self.pose.x,y-self.pose.y],[np.cos(self.pose.theta),np.sin(self.pose.theta)])
@@ -128,12 +128,12 @@ class TurtleBot:
             distancia.append(self.calculaDistancia(self.pose.x,self.pose.y,x1,y1));
         if self.proyeccion(x2,y2) > 0:
             distancia.append(self.calculaDistancia(self.pose.x,self.pose.y,x2,y2));
-        if self.proyeccion(x3,y3) > 0:
-            distancia.append(self.calculaDistancia(self.pose.x,self.pose.y,x3,y3));
         if self.proyeccion(x4,y4) > 0:
             distancia.append(self.calculaDistancia(self.pose.x,self.pose.y,x4,y4));
         if self.proyeccion(x5,y5) > 0:
             distancia.append(self.calculaDistancia(self.pose.x,self.pose.y,x5,y5));
+        if self.proyeccion(x6,y6) > 0:
+            distancia.append(self.calculaDistancia(self.pose.x,self.pose.y,x6,y6));
         if len(distancia) == 0:
             minD = r2+1;
         else:
@@ -186,11 +186,11 @@ class TurtleBot:
         res = [];
         mini = 1
         for i in trayectorias:
-            aux = min([self.calculaDistancia(i[0],i[1],x1,y1),self.calculaDistancia(i[0],i[1],x2,y2),self.calculaDistancia(i[0],i[1],x3,y3),self.calculaDistancia(i[0],i[1],x4,y4),self.calculaDistancia(i[0],i[1],x5,y5)]);
+            aux = min([self.calculaDistancia(i[0],i[1],x1,y1),self.calculaDistancia(i[0],i[1],x2,y2),self.calculaDistancia(i[0],i[1],x4,y4),self.calculaDistancia(i[0],i[1],x5,y5),self.calculaDistancia(i[0],i[1],x6,y6)]);
             if aux > mini and i[0] > 1.5 and i[0] < 9.5 and i[1] > 1.5 and i[1] < 9.5 and abs(i[0]-self.pose.x)>0.5 and abs(i[1]-self.pose.y)>0.5:
                 xmid = (i[0]+self.pose.x)/2;
                 ymid = (i[1]+self.pose.y)/2;
-                aux2 = min([self.calculaDistancia(xmid,ymid,x1,y1),self.calculaDistancia(xmid,ymid,x2,y2),self.calculaDistancia(xmid,ymid,x3,y3),self.calculaDistancia(xmid,ymid,x4,y4),self.calculaDistancia(xmid,ymid,x5,y5)]);
+                aux2 = min([self.calculaDistancia(xmid,ymid,x1,y1),self.calculaDistancia(xmid,ymid,x2,y2),self.calculaDistancia(xmid,ymid,x4,y4),self.calculaDistancia(xmid,ymid,x5,y5),self.calculaDistancia(xmid,ymid,x6,y6)]);
                 if aux2 > 1:
                     mini = aux;
                     res = i;
@@ -296,8 +296,6 @@ def recorrePuntos(puntos, eps):
         print(puntos);
         if abs(x.pose.x - puntos[0][0] < eps) and abs(x.pose.y - puntos[0][1] < eps) :
             puntos.pop(0);
-    while abs(x.pose.x - 5.5 > 0.1) or abs(x.pose.y - 5 > 0.1) :
-            recorrePuntos([5.5,5],0.1);
 
 if __name__ == '__main__':
     #Nos suscribimos para detectar la posición de las tortugas
@@ -307,22 +305,14 @@ if __name__ == '__main__':
     position_topic2 = "/turtle2/pose"
     pose_subscriber2 = rospy.Subscriber(position_topic2, Pose, poseCallback2)
     
-    position_topic3 = "/turtle3/pose"
-    pose_subscriber3 = rospy.Subscriber(position_topic3, Pose, poseCallback3)
-    
     position_topic4 = "/turtle4/pose"
     pose_subscriber4 = rospy.Subscriber(position_topic4, Pose, poseCallback4)
     
     position_topic5 = "/turtle5/pose"
     pose_subscriber5 = rospy.Subscriber(position_topic5, Pose, poseCallback5)
+    
+    position_topic6 = "/turtle6/pose"
+    pose_subscriber6 = rospy.Subscriber(position_topic6, Pose, poseCallback6)
    
     
-    recorrePuntos([[8,10],[1,3],[5.5,5]],0.1)
-    time.sleep(0.5)
-    recorrePuntos([[5.5,5]],0.1)
-    time.sleep(0.5)
-    recorrePuntos([[5.5,5]],0.1)
-    time.sleep(0.5)
-    recorrePuntos([[5.5,5]],0.1)
-    time.sleep(0.5)
-    recorrePuntos([[5.5,5]],0.1)
+    recorrePuntos([[6.5,10],[1,2],[1.5,5]],0.1)
